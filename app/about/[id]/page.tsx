@@ -18,8 +18,6 @@ interface PageProps {
   }
 }
 
-export default async function FlowerDetails({ params }: PageProps) {
-  const { id } = params
-
-  return <FlowerDetailsContent id={id} />
+export default function FlowerDetails({ params }: PageProps) {
+  return <FlowerDetailsContent id={params.id} />
 }
