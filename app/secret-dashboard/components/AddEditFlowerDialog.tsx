@@ -27,10 +27,9 @@ export type FlowerType = {
   views: number
   postedAt: string
   price: number
-  createdAt?: any
-  updatedAt?: any
+  createdAt?: Date
+  updatedAt?: Date
 }
-
 
 interface AddEditFlowerDialogProps {
   isOpen: boolean
@@ -68,7 +67,7 @@ export default function AddEditFlowerDialog({
         // Wait for the file upload to complete
         uploadTask.on(
           "state_changed",
-          snapshot => {
+          () => {
             // You can monitor upload progress here if needed
           },
           error => {

@@ -23,7 +23,7 @@ interface Order {
 }
 
 export default function CommandesContent() {
-  const [orders, setOrders] = useState<Order[]>([
+  const [orders] = useState<Order[]>([
     {
       id: "CMD-2023-001",
       date: "15/03/2023",
@@ -128,7 +128,7 @@ export default function CommandesContent() {
             <ArrowLeft onClick={() => router.back()} className="cursor-pointer mr-2"/>
             Mes Commandes
           </h1>
-          <p className="text-emerald-700 dark:text-emerald-300">Suivez l'historique et l'état de vos commandes</p>
+          <p className="text-emerald-700 dark:text-emerald-300">Suivez l&apos;historique et l&apos;état de vos commandes</p>
         </div>
         <div className="flex items-center mt-4 md:mt-0">
           <ShoppingBag className="h-8 w-8 text-emerald-600 dark:text-emerald-400 mr-2" />
@@ -272,4 +272,3 @@ export default function CommandesContent() {
     </div>
   )
 }
-

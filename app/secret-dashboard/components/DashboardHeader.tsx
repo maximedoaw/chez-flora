@@ -16,9 +16,7 @@ import { useRouter } from "next/navigation"
 import { User as FirebaseUser, signOut } from "firebase/auth"
 import { auth } from "@/firebase/firebase"
 
-interface DashboardHeaderProps {
-  user: FirebaseUser | null
-}
+
 
 export default function DashboardHeader({ user }: any) {
   const router = useRouter()

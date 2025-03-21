@@ -3,7 +3,6 @@
 import AuthScreen from "@/components/home/auth-screen/AuthScreen";
 import HomeScreen from "@/components/home/home-screen/HomeScreen";
 import { auth } from "@/firebase/firebase";
-import { Loader, Loader2 } from "lucide-react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 function RotatingLoader() {
