@@ -1,3 +1,6 @@
+"use client"
+
+import { useParams, useSearchParams } from "next/navigation"
 import FlowerDetailsContent from "./FlowerDetailsContent"
 
 export type Flower = {
@@ -12,14 +15,10 @@ export type Flower = {
   price: string
 }
 
-interface PageProps {
-  params: { id: string }
-}
 
-export default function FlowerDetails({ params }: PageProps) {
-  if (!params?.id) {
-    return <p>Error: No ID provided</p>
-  }
 
-  return <FlowerDetailsContent id={params.id} />
+export default function FlowerDetails() {
+  const params = useSearchParams()
+  const id = params.get("id") || ""
+  return <FlowerDetailsContent id={id as string} />
 }

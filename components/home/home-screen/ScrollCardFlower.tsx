@@ -7,7 +7,7 @@ import Link from 'next/link';
 export const ScrollCardFlower = ({ flower } : { flower : Flower}) => {
   return (
     <div className="rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer">
-      <Link href={`/about/${flower.id}`}>
+      <Link href={`/about?id=${flower.id}`}>
         <div className="aspect-video relative overflow-hidden">
           <img
             src={flower.imageUrl}
