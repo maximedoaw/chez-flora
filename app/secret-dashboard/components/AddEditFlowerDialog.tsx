@@ -12,7 +12,25 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { FlowerType } from "../types"
+import { useState } from "react"
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
+import { doc, setDoc } from "firebase/firestore"
+import { db, storage } from "@/firebase/firebase"
+
+export type FlowerType = {
+  id: string
+  slug: string
+  title: string
+  imageUrl: string
+  description: string
+  author: string
+  views: number
+  postedAt: string
+  price: number
+  createdAt?: any
+  updatedAt?: any
+}
+
 
 interface AddEditFlowerDialogProps {
   isOpen: boolean
@@ -31,6 +49,53 @@ export default function AddEditFlowerDialog({
   onSubmit,
   onChange
 }: AddEditFlowerDialogProps) {
+  const [imageFile, setImageFile] = useState<File | null>(null)
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setImageFile(file)
+    }
+  }
+
+  const handleSubmit = async () => {
+    if (imageFile) {
+      try {
+        // Create a reference to the file in Firebase Storage
+        const storageRef = ref(storage, `flowers/${imageFile.name}`)
+        const uploadTask = uploadBytesResumable(storageRef, imageFile)
+
+        // Wait for the file upload to complete
+        uploadTask.on(
+          "state_changed",
+          snapshot => {
+            // You can monitor upload progress here if needed
+          },
+          error => {
+            console.error("Error uploading image:", error)
+          },
+          async () => {
+            // Once upload is complete, get the download URL
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
+
+            // Include the download URL in the form data
+            formData.imageUrl = downloadURL
+
+            // Now, handle the actual save to Firestore
+            const flowerRef = doc(db, "flowers", formData.id || "") // Adjust based on your needs
+            await setDoc(flowerRef, formData, { merge: true })
+
+            // After submission, call the onSubmit callback
+            onSubmit()
+            onClose()
+          }
+        )
+      } catch (error) {
+        console.error("Error uploading flower data:", error)
+      }
+    }
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px]">
@@ -66,13 +131,12 @@ export default function AddEditFlowerDialog({
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="imageUrl">Image URL *</Label>
+            <Label htmlFor="imageUrl">Image *</Label>
             <Input
               id="imageUrl"
               name="imageUrl"
-              value={formData.imageUrl || ""}
-              onChange={onChange}
-              placeholder="https://example.com/image.jpg"
+              type="file"
+              onChange={handleImageChange}
             />
           </div>
           <div className="space-y-2">
@@ -114,7 +178,7 @@ export default function AddEditFlowerDialog({
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={onSubmit} className="bg-emerald-600 hover:bg-emerald-700">
+          <Button onClick={handleSubmit} className="bg-emerald-600 hover:bg-emerald-700">
             {isEdit ? "Save Changes" : "Add"}
           </Button>
         </DialogFooter>

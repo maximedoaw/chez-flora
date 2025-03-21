@@ -81,7 +81,7 @@ export default function SideBar() {
 
             </Button>
           ))}
-          <Button
+          {user?.uid === process.env.NEXT_PUBLIC_ADMIN_UID  && <Button
               variant="ghost"
               className={`w-full justify-start text-emerald-700 hover:text-emerald-900 hover:bg-emerald-100 
                  dark:hover:bg-gray-700`}
@@ -92,7 +92,7 @@ export default function SideBar() {
                     Admin
                 </a>
 
-            </Button>
+            </Button>}
         </div>
       </div>
       <div className="px-7">

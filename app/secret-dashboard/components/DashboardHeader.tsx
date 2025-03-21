@@ -13,7 +13,7 @@ import {
 import { Home, LogOut, Settings, User } from 'lucide-react'
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { User as FirebaseUser } from "firebase/auth"
+import { User as FirebaseUser, signOut } from "firebase/auth"
 import { auth } from "@/firebase/firebase"
 
 interface DashboardHeaderProps {
@@ -22,6 +22,11 @@ interface DashboardHeaderProps {
 
 export default function DashboardHeader({ user }: any) {
   const router = useRouter()
+  
+  const handleLogOut = () => {
+    signOut(auth)
+    router.push("/")
+  }
 
   return (
     <div className="flex justify-between items-center mb-8">
@@ -67,7 +72,7 @@ export default function DashboardHeader({ user }: any) {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={() => auth.signOut()}
+                onClick={() => handleLogOut()}
                 className="flex items-center cursor-pointer text-red-600 dark:text-red-400"
               >
                 <LogOut className="h-4 w-4 mr-2" />
