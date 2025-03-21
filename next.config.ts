@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
       "images.unsplash.com",
     ]
   },
+  experimental: {
+    
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -13,5 +16,11 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true, 
   },
 };
+
+module.exports = {
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
+}
 
 export default nextConfig;
