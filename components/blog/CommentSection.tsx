@@ -1,10 +1,6 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect } from "react"
-import { useAuth } from "@/lib/firebase/auth"
-//import { addComment, getComments, deleteComment } from "@/lib/firebase/comments"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -13,6 +9,8 @@ import { Trash2, MessageSquare } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { fr } from "date-fns/locale"
 import { addComment, deleteComment, getComments } from "@/lib/firebase/comment"
+import { useAuthState } from "react-firebase-hooks/auth"
+import { auth } from "@/firebase/firebase"
 
 interface Comment {
   id: string
@@ -30,7 +28,7 @@ export default function CommentSection({ postId }: { postId: string }) {
   const [newComment, setNewComment] = useState("")
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
-  const { user, signIn } = useAuth()
+  const [user]= useAuthState(auth)
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -97,7 +95,6 @@ export default function CommentSection({ postId }: { postId: string }) {
         Commentaires ({comments.length})
       </h2>
 
-      {/* Formulaire de commentaire */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Laissez un commentaire</CardTitle>
@@ -114,16 +111,12 @@ export default function CommentSection({ postId }: { postId: string }) {
             />
           </CardContent>
           <CardFooter className="flex justify-between">
-            {!user ? (
-              <Button type="button" onClick={() => signIn()} variant="outline">
-                Connectez-vous pour commenter
-              </Button>
-            ) : (
+            {user &&
               <>
                 <div className="flex items-center">
                   <Avatar className="h-8 w-8 mr-2">
-                    <AvatarImage src={user.photoURL || ""} />
-                    <AvatarFallback>{user.displayName?.charAt(0) || "U"}</AvatarFallback>
+                    <AvatarImage src={user?.photoURL || ""} />
+                    <AvatarFallback>{user?.displayName?.charAt(0) || "U"}</AvatarFallback>
                   </Avatar>
                   <span className="text-sm text-emerald-700 dark:text-emerald-300">
                     {user.displayName || "Utilisateur anonyme"}
@@ -133,15 +126,13 @@ export default function CommentSection({ postId }: { postId: string }) {
                   {submitting ? "Envoi..." : "Publier"}
                 </Button>
               </>
-            )}
+            }
           </CardFooter>
         </form>
       </Card>
 
-      {/* Liste des commentaires */}
       <div className="space-y-4">
         {loading ? (
-          // Placeholder pendant le chargement
           Array(3)
             .fill(0)
             .map((_, i) => (
@@ -154,8 +145,8 @@ export default function CommentSection({ postId }: { postId: string }) {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-4 bg-emerald-100 dark:bg-emerald-800/30 rounded mb-2"></div>
-                  <div className="h-4 bg-emerald-100 dark:bg-emerald-800/30 rounded w-5/6"></div>
+                  <div className="h-4  rounded mb-2"></div>
+                  <div className="h-4  rounded w-5/6"></div>
                 </CardContent>
               </Card>
             ))

@@ -1,10 +1,26 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Clock, MessageCircle, User } from "lucide-react"
+import { collection, doc, setDoc } from "firebase/firestore"
+import { db } from "@/firebase/firebase"
+import { useEffect, useState } from "react"
 
-// Données statiques pour les articles de blog
+interface Post {
+  id: number;
+  slug: string;
+  title: string;
+  excerpt: string;
+  image: string;
+  date: string;
+  author: string;
+  commentCount: number;
+}
+
+
 const blogPosts = [
   {
     id: 1,
@@ -66,9 +82,54 @@ const blogPosts = [
     author: "Émilie Blanc",
     commentCount: 10,
   },
-]
+
+  {
+    id: 6,
+    slug: "fleurs-exotiques",
+    title: "À la découverte des fleurs exotiques",
+    excerpt:
+      "Voyagez à travers les fleurs exotiques les plus incroyables du monde et apprenez comment les cultiver chez vous.",
+    image:
+      "https://images.unsplash.com/photo-1558522195-e1201b090344?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
+    date: "5 septembre 2023",
+    author: "Sophie Dubois",
+    commentCount: 14,
+  },
+  {
+    id: 7,
+    slug: "tendances-decoration-florale",
+    title: "Les tendances déco florale en 2024",
+    excerpt:
+      "Découvrez les styles de décoration florale qui feront sensation cette année. Inspiration et idées créatives garanties !",
+    image:
+      "https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
+    date: "20 septembre 2023",
+    author: "Claire Dupont",
+    commentCount: 11,
+  },
+
+];
+
 
 export default function BlogContent() {
+  const [flowersPosts, setFlowersPosts] = useState<Post[]>([]);
+  useEffect(() => {
+    const saveBlogPost = async () => {
+      try {
+        const blogCollection = collection(db, 'blog')
+        for (const post of blogPosts) {
+          const postRef = doc(blogCollection, post.slug)
+          await setDoc(postRef, post)
+          setFlowersPosts((prev)=> [...prev, post])
+        }
+      } catch (error : any) {
+        console.error("Erreur lors de la sauvegarde des articles de blog:", error);
+        
+      }
+    }
+    saveBlogPost()    
+  }, [])
+
   return (
     <div className="container mx-auto py-12 px-4">
       <div className="max-w-4xl mx-auto mb-12 text-center">
@@ -81,7 +142,7 @@ export default function BlogContent() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {blogPosts.map((post) => (
-          <Card key={post.id} className="overflow-hidden flex flex-col h-full">
+          <Card key={post.id} className="overflow-hidden flex flex-col h-full dark:bg-gray-900">
             <div className="relative h-48 w-full">
               <Image
                 src={post.image || "/placeholder.svg"}

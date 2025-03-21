@@ -2,13 +2,14 @@
 
 import { useState, useEffect, use } from "react"
 import { useTheme } from "next-themes"
-import { BookOpen, ShoppingBag, Settings, Moon, Sun, Menu, Home } from "lucide-react"
+import { BookOpen, ShoppingBag, Settings, Moon, Sun, Menu, Home, LockKeyhole } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { LogOut } from "lucide-react";
 import { signOut } from "firebase/auth"
 import { auth } from "@/firebase/firebase"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+import { useAuthState } from "react-firebase-hooks/auth"
 
 
 export default function SideBar() {
@@ -16,6 +17,8 @@ export default function SideBar() {
   const { theme, setTheme } = useTheme()
   const [isMobile, setIsMobile] = useState(false)
   const pathName = usePathname()
+  const [user] = useAuthState(auth)
+  const router = useRouter()
 
   // Prevent hydration mismatch
   useEffect(() => {
@@ -30,19 +33,27 @@ export default function SideBar() {
     return () => {
       window.removeEventListener("resize", checkScreenSize)
     }
+    setTimeout(() => {
+      if(user) {
+        router.push("/")
+      }
+    }, 5000)
   }, [])
 
   const menuItems = [
     { icon: Home, label: "Accueil", href: "/" },
     { icon: BookOpen, label: "Blog", href: "/blog" },
-    { icon: ShoppingBag, label: "Mes commandes", href: "/command" },
+    { icon: ShoppingBag, label: "Mes commandes", href: "/orders" },
     { icon: Settings, label: "Paramètres", href: "/settings" },
     { icon: LogOut, label: "Déconnexion", href: "#" },
 
   ]
 
-  const handleLogOut = () => signOut(auth)
-
+  const handleLogOut = () => {
+    signOut(auth)
+    router.push("/")
+  }
+  
   const SideBarContent = () => (
     <div className="h-full flex flex-col py-6 w-[220px] bg-emerald-50 dark:bg-gray-800">
       <div className="px-3 py-2">
@@ -52,7 +63,7 @@ export default function SideBar() {
             <Button
               key={index}
               variant="ghost"
-              className={`w-full justify-start text-emerald-700 hover:text-emerald-900 hover:bg-emerald-300 
+              className={`w-full justify-start text-emerald-700 hover:text-emerald-900 hover:bg-emerald-100 
                 ${item.href === pathName ? "bg-emerald-300" : ""} dark:hover:bg-gray-700`}
               asChild
             >
@@ -70,6 +81,18 @@ export default function SideBar() {
 
             </Button>
           ))}
+          <Button
+              variant="ghost"
+              className={`w-full justify-start text-emerald-700 hover:text-emerald-900 hover:bg-emerald-100 
+                 dark:hover:bg-gray-700`}
+              asChild
+            >
+                <a href={"/secret-dashboard"}>
+                    <LockKeyhole className="mr-2 h-4 w-4" />
+                    Admin
+                </a>
+
+            </Button>
         </div>
       </div>
       <div className="px-7">

@@ -7,72 +7,73 @@ const flowerArrangements = [
     name: "Bouquet Printanier",
     description: "Un arrangement délicat de roses, pivoines et fleurs de saison dans des tons pastel.",
     image: "https://images.unsplash.com/photo-1599733594230-6b823276abcc",
-    price: "45,90 €"
+    price: "30 000 FCFA"
   },
   {
     id: 2,
     name: "Élégance Rustique",
     description: "Composition florale dans des tons chauds avec des fleurs sauvages et du feuillage texturé.",
     image: "https://images.unsplash.com/photo-1561181286-d3fee7d55364",
-    price: "39,90 €"
+    price: "26 000 FCFA"
   },
   {
     id: 3,
     name: "Jardin Enchanté",
     description: "Arrangement luxuriant d'orchidées, de lys et de verdure exotique pour une ambiance tropicale.",
     image: "https://images.unsplash.com/photo-1591886960571-74d43a9d4166",
-    price: "52,90 €"
+    price: "35 000 FCFA"
   },
   {
     id: 4,
     name: "Romance Éternelle",
     description: "Bouquet romantique de roses rouges et de gypsophile, parfait pour exprimer l'amour.",
     image: "https://images.unsplash.com/photo-1587314168485-3236d6710814",
-    price: "49,90 €"
+    price: "33 000 FCFA"
   },
   {
     id: 5,
     name: "Fraîcheur Champêtre",
     description: "Mélange naturel de fleurs des champs et de verdure sauvage dans un style bohème.",
     image: "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d",
-    price: "36,90 €"
+    price: "25 000 FCFA"
   },
   {
     id: 6,
     name: "Symphonie Violette",
     description: "Composition harmonieuse d'iris, de lisianthus et de clématites dans des tons violets.",
     image: "https://images.unsplash.com/photo-1513545379784-0f4779d1561b",
-    price: "42,90 €"
+    price: "28 000 FCFA"
   },
   {
     id: 7,
     name: "Douceur Pastel",
     description: "Arrangement délicat de roses, d'eucalyptus et de fleurs de saison dans des tons doux.",
     image: "https://images.unsplash.com/photo-1562690868-60bbe7293e94",
-    price: "47,90 €"
+    price: "31 000 FCFA"
   },
   {
     id: 8,
     name: "Soleil Levant",
     description: "Bouquet éclatant de tournesols, de gerberas et de solidago pour illuminer votre journée.",
     image: "https://images.unsplash.com/photo-1551445523-324a0fdab051",
-    price: "44,90 €"
+    price: "29 000 FCFA"
   },
   {
     id: 9,
     name: "Brise Marine",
-    description: "Composition inspirée de l'océan avec des délphinium, des roses bleues et des eucalyptus.",
+    description: "Composition inspirée de l'océan avec des delphiniums, des roses bleues et des eucalyptus.",
     image: "https://images.unsplash.com/photo-1558693168-c370615b54e0",
-    price: "41,90 €"
+    price: "27 000 FCFA"
   },
   {
     id: 10,
     name: "Rêve d'Automne",
     description: "Bouquet chaleureux aux couleurs automnales avec des dahlias, des roses et des feuillages colorés.",
     image: "https://images.unsplash.com/photo-1508610048659-a06b669e3321",
-    price: "43,90 €"
+    price: "30 500 XOF"
   }
 ];
+
 
 export default function RightPanel() {
 

@@ -1,10 +1,9 @@
 import { db } from "@/firebase/firebase"
 import { collection, getDocs, doc, getDoc, query, orderBy, limit } from "firebase/firestore"
 
-// Récupérer tous les articles de blog
 export async function getBlogPosts() {
   try {
-    const postsQuery = query(collection(db, "blog_posts"), orderBy("createdAt", "desc"))
+    const postsQuery = query(collection(db, "blog"), orderBy("createdAt", "desc"))
 
     const snapshot = await getDocs(postsQuery)
 
@@ -19,7 +18,6 @@ export async function getBlogPosts() {
   }
 }
 
-// Récupérer un article spécifique par son slug
 export async function getBlogPost(slug: string) {
   try {
     const docRef = doc(db, "blog_posts", slug)
@@ -40,7 +38,6 @@ export async function getBlogPost(slug: string) {
   }
 }
 
-// Récupérer les articles récents (pour le RightPanel par exemple)
 export async function getRecentPosts(count = 3) {
   try {
     const postsQuery = query(collection(db, "blog_posts"), orderBy("createdAt", "desc"), limit(count))
