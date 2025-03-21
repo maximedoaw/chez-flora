@@ -13,11 +13,13 @@ export type Flower = {
 }
 
 interface PageProps {
-  params: {
-    id: string
-  }
+  params: { id: string }
 }
 
 export default function FlowerDetails({ params }: PageProps) {
+  if (!params?.id) {
+    return <p>Error: No ID provided</p>
+  }
+
   return <FlowerDetailsContent id={params.id} />
 }
