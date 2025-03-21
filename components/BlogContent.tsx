@@ -161,7 +161,7 @@ export default function BlogContent() {
                 <span>{post.author}</span>
               </div>
               <CardTitle className="text-xl font-serif text-emerald-800 dark:text-emerald-200">
-                <Link href={`/blog/${post.slug}`} className="hover:underline">
+                <Link href={`/blog?slug=${post.slug}`} className="hover:underline">
                   {post.title}
                 </Link>
               </CardTitle>

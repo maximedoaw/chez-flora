@@ -11,7 +11,7 @@ import { useEffect, useState } from "react"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "@/firebase/firebase"
 import { Flower } from "@/types/Flower"
-import LoadingSkeleton from "./LoadingSkeleton"
+import LoadingSkeleton from "./[id]/LoadingSkeleton"
 import ErrorMessage from "./ErrorMessage"
 
 export default function FlowerDetailsContent({id}: {id: string}) {
