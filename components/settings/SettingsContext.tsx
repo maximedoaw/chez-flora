@@ -161,7 +161,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
     if (name.includes(".")) {
       const [parent, child] = name.split(".")
-      setProfile((prev) => ({
+      setProfile((prev : any) => ({
         ...prev,
         [parent]: {
           ...(prev[parent as keyof typeof prev ?? {}]),
