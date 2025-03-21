@@ -1,26 +1,34 @@
 "use client"
 
-import BlogPost from '@/components/blog/BlogPost'
-import BlogContent from '@/components/BlogContent'
-import BaseLayout from '@/components/home/home-screen/BaseLayout'
-import { useSearchParams } from 'next/navigation'
-import React from 'react'
+import BlogPost from "@/components/blog/BlogPost"
+import BlogContent from "@/components/BlogContent"
+import BaseLayout from "@/components/home/home-screen/BaseLayout"
+import { useSearchParams } from "next/navigation"
+import React, { Suspense } from "react"
 
-const page = () => {
-  const params = useSearchParams()
-  const slug = params.get("slug")
+const Page = () => {
   return (
-    <>
-        {slug 
-        ?
-         <BlogPost slug={slug as string} /> 
-        : 
-        <BaseLayout renderPanel={false}>
-            <BlogContent/>
-        </BaseLayout>}
-    </>
-
+    <Suspense fallback={<p>Loading...</p>}>
+      <BlogPageContent />
+    </Suspense>
   )
 }
 
-export default page
+const BlogPageContent = () => {
+  const params = useSearchParams()
+  const slug = params.get("slug")
+
+  return (
+    <>
+      {slug ? (
+        <BlogPost slug={slug} />
+      ) : (
+        <BaseLayout renderPanel={false}>
+          <BlogContent />
+        </BaseLayout>
+      )}
+    </>
+  )
+}
+
+export default Page
