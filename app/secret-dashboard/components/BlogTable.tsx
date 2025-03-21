@@ -15,14 +15,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Search, MoreHorizontal, Edit, Trash, Calendar, MessageSquare, ImageIcon, BookOpen } from 'lucide-react'
-import { Post } from "../types"
 
 interface BlogTableProps {
-  posts: Post[]
+  posts: any[]
   loading: boolean
   onAdd: () => void
-  onEdit: (post: Post) => void
-  onDelete: (post: Post) => void
+  onEdit: (post: any) => void
+  onDelete: (post: any) => void
 }
 
 export default function BlogTable({ posts, loading, onAdd, onEdit, onDelete }: BlogTableProps) {

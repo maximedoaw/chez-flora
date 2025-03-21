@@ -15,14 +15,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Search, MoreHorizontal, Edit, Trash, Mail, Phone, User } from "lucide-react"
-import type { UserProfile } from "../types"
 
 interface UsersTableProps {
-  users: UserProfile[]
+  users: any[]
   loading: boolean
   onAdd: () => void
-  onEdit: (user: UserProfile) => void
-  onDelete: (user: UserProfile) => void
+  onEdit: (user: any) => void
+  onDelete: (user: any) => void
 }
 
 export default function UsersTable({ users, loading, onAdd, onEdit, onDelete }: UsersTableProps) {

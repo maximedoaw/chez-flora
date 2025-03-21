@@ -12,12 +12,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Post } from "../types"
 
 interface AddEditPostDialogProps {
   isOpen: boolean
   isEdit: boolean
-  formData: Partial<Post>
+  formData: Partial<any>
   onClose: () => void
   onSubmit: () => void
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void

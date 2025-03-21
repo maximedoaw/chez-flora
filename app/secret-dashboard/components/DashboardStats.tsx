@@ -4,10 +4,9 @@ import type React from "react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Flower, Users, BookOpen, TrendingUp } from "lucide-react"
-import type { DashboardStats as StatsType } from "../types"
 
 interface DashboardStatsProps {
-  stats: StatsType
+  stats: any
   loading: boolean
 }
 

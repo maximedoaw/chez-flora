@@ -14,7 +14,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Plus, Search, MoreHorizontal, Edit, Trash, Eye, ImageIcon } from "lucide-react"
-import type { FlowerType } from "../types"
+export type FlowerType = {
+  id: string
+  slug: string
+  title: string
+  imageUrl: string
+  description: string
+  author: string
+  views: number
+  postedAt: string
+  price: number
+  createdAt?: any
+  updatedAt?: any
+}
 
 interface FlowersTableProps {
   flowers: FlowerType[]

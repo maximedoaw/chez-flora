@@ -14,12 +14,11 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { MapPin, Bell } from 'lucide-react'
-import { UserProfile } from "../types"
 
 interface AddEditUserDialogProps {
   isOpen: boolean
   isEdit: boolean
-  formData: Partial<UserProfile>
+  formData: Partial<any>
   onClose: () => void
   onSubmit: () => void
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
