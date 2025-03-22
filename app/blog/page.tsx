@@ -6,6 +6,7 @@ import BaseLayout from "@/components/home/home-screen/BaseLayout"
 import { useSearchParams } from "next/navigation"
 import React, { Suspense } from "react"
 import { create } from "zustand"
+import { RotatingLoader } from "../page"
 
 
 interface SlugStore {
@@ -21,7 +22,7 @@ export const useSlugStore = create<SlugStore>((set) => ({
 
 const Page = () => {
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<RotatingLoader/>}>
       <BlogPageContent />
     </Suspense>
   )
