@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { 
   Dialog, 
@@ -7,37 +7,38 @@ import {
   DialogFooter, 
   DialogHeader, 
   DialogTitle 
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { useState } from "react"
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
-import { doc, setDoc } from "firebase/firestore"
-import { db, storage } from "@/firebase/firebase"
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
+import { db, storage } from "@/firebase/firebase";
+import { v4 as uuidv4 } from "uuid"; // Pour générer des IDs uniques
 
 export type FlowerType = {
-  id: string
-  slug: string
-  title: string
-  imageUrl: string
-  description: string
-  author: string
-  views: number
-  postedAt: string
-  price: number
-  createdAt?: Date
-  updatedAt?: Date
-}
+  id: string;
+  slug: string;
+  title: string;
+  imageUrl: string;
+  description: string;
+  author: string;
+  views: number;
+  postedAt: string;
+  price: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
 
 interface AddEditFlowerDialogProps {
-  isOpen: boolean
-  isEdit: boolean
-  formData: Partial<FlowerType>
-  onClose: () => void
-  onSubmit: () => void
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+  isOpen: boolean;
+  isEdit: boolean;
+  formData: Partial<FlowerType>;
+  onClose: () => void;
+  onSubmit: () => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
 export default function AddEditFlowerDialog({
@@ -48,52 +49,68 @@ export default function AddEditFlowerDialog({
   onSubmit,
   onChange
 }: AddEditFlowerDialogProps) {
-  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Pour gérer l'état de soumission
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      setImageFile(file)
+      setImageFile(file);
     }
-  }
+  };
 
   const handleSubmit = async () => {
-    if (imageFile) {
-      try {
-        // Create a reference to the file in Firebase Storage
-        const storageRef = ref(storage, `flowers/${imageFile.name}`)
-        const uploadTask = uploadBytesResumable(storageRef, imageFile)
-
-        // Wait for the file upload to complete
-        uploadTask.on(
-          "state_changed",
-          () => {
-            // You can monitor upload progress here if needed
-          },
-          error => {
-            console.error("Error uploading image:", error)
-          },
-          async () => {
-            // Once upload is complete, get the download URL
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
-
-            // Include the download URL in the form data
-            formData.imageUrl = downloadURL
-
-            // Now, handle the actual save to Firestore
-            const flowerRef = doc(db, "flowers", formData.id || "") // Adjust based on your needs
-            await setDoc(flowerRef, formData, { merge: true })
-
-            // After submission, call the onSubmit callback
-            onSubmit()
-            onClose()
-          }
-        )
-      } catch (error) {
-        console.error("Error uploading flower data:", error)
-      }
+    if (!formData.title || !formData.slug || !imageFile) {
+      alert("Please fill in all required fields.");
+      return;
     }
-  }
+
+    setIsSubmitting(true);
+
+    try {
+      // Générer un nouvel ID si c'est une nouvelle fleur
+      const flowerId = isEdit && formData.id ? formData.id : uuidv4();
+
+      // Téléverser l'image dans Firebase Storage
+      const storageRef = ref(storage, `flowers/${imageFile.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
+      uploadTask.on(
+        "state_changed",
+        null,
+        (error) => {
+          console.error("Error uploading image:", error);
+          setIsSubmitting(false);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+          // Mettre à jour les données de la fleur avec l'URL de l'image
+          const flowerData = {
+            ...formData,
+            id: flowerId,
+            imageUrl: downloadURL,
+            createdAt: isEdit ? formData.createdAt : new Date(),
+            updatedAt: new Date(),
+          };
+
+          // Référence du document Firestore
+          const flowerRef = doc(db, "flowers", flowerId);
+
+          // Enregistrer ou mettre à jour le document dans Firestore
+          await setDoc(flowerRef, flowerData, { merge: true });
+
+          // Appeler la fonction de soumission et fermer le dialogue
+          onSubmit();
+          onClose();
+          setIsSubmitting(false);
+        }
+      );
+    } catch (error) {
+      console.error("Error uploading flower data:", error);
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -116,6 +133,7 @@ export default function AddEditFlowerDialog({
                 value={formData.title || ""}
                 onChange={onChange}
                 placeholder="Red Rose"
+                required
               />
             </div>
             <div className="space-y-2">
@@ -126,6 +144,7 @@ export default function AddEditFlowerDialog({
                 value={formData.slug || ""}
                 onChange={onChange}
                 placeholder="red-rose"
+                required
               />
             </div>
           </div>
@@ -136,6 +155,7 @@ export default function AddEditFlowerDialog({
               name="imageUrl"
               type="file"
               onChange={handleImageChange}
+              required
             />
           </div>
           <div className="space-y-2">
@@ -161,7 +181,7 @@ export default function AddEditFlowerDialog({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="price">Price (€)</Label>
+              <Label htmlFor="price">Price (frcfa)</Label>
               <Input
                 id="price"
                 name="price"
@@ -174,14 +194,18 @@ export default function AddEditFlowerDialog({
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit} className="bg-emerald-600 hover:bg-emerald-700">
-            {isEdit ? "Save Changes" : "Add"}
+          <Button 
+            onClick={handleSubmit} 
+            className="bg-emerald-600 hover:bg-emerald-700"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Submitting..." : (isEdit ? "Save Changes" : "Add")}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

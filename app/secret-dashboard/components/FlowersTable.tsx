@@ -123,7 +123,7 @@ export default function FlowersTable({ flowers, loading, onAdd, onEdit, onDelete
                       </div>
                     </TableCell>
                     <TableCell className="font-medium">{flower.title}</TableCell>
-                    <TableCell>{typeof flower.price === "number" ? flower.price.toFixed(2) : flower.price} €</TableCell>
+                    <TableCell>{typeof flower.price === "number" ? flower.price.toFixed(2) : flower.price} frcfa</TableCell>
                     <TableCell>
                       <div className="flex items-center">
                         <Eye className="h-4 w-4 mr-1 text-muted-foreground" />
