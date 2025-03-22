@@ -7,5 +7,6 @@ export type Flower = {
     author: string,
     views: number,
     postedAt: string,
-    price: number
+    price: number,
+    payementLink?: string
   }

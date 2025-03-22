@@ -10,14 +10,14 @@ export const ScrollCardFlower = ({ flower } : { flower : Flower}) => {
       <Link href={`/about/${flower.id}`}>
         <div className="aspect-video relative overflow-hidden">
           <img
-            src={flower.imageUrl}
+            src={flower.imageUrl || '/flowers/flowerNotFound.webp'}
             alt={flower.title}
             className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300"
           />
         </div>
         <div className="p-4">
           <h3 className="text-emerald-700 font-semibold text-lg mb-2 line-clamp-2">
-            {flower.title}           {flower.price.toLocaleString()} FCFA
+          {flower.title} {flower.price ? flower.price.toLocaleString() : 'N/A'} FCFA
 
           </h3>
           <p className="text-gray-300 text-sm mb-3 line-clamp-2">
@@ -30,7 +30,7 @@ export const ScrollCardFlower = ({ flower } : { flower : Flower}) => {
             </div>
             <div className="flex items-center gap-1">
               <Eye size={16} />
-              <span>{flower.views.toLocaleString()}</span>
+              <span>{flower && flower.views && flower.views.toLocaleString()}</span>
             </div>
             <div className="flex items-center gap-1">
               <Clock size={16} />

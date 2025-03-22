@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, use } from "react"
+import { useState, useEffect } from "react"
 import { useTheme } from "next-themes"
 import { BookOpen, ShoppingBag, Settings, Moon, Sun, Menu, Home, LockKeyhole } from "lucide-react"
 import { Button } from "@/components/ui/button"

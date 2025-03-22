@@ -1,131 +1,126 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { ArrowLeft, Calendar, Clock, Package, Search, ShoppingBag, Truck, X } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react";
+import { ArrowLeft, Calendar, Clock, Package, Search, ShoppingBag, Truck, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
+import { collection, getDocs } from "firebase/firestore";
+import { auth, db } from "@/firebase/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 // Types pour les commandes
-type OrderStatus = "en-attente" | "livré" | "annulé"
+type OrderStatus = "en-attente" | "livré" | "annulé";
 
 interface Order {
-  id: string
-  date: string
-  products: string[]
-  total: string
-  status: OrderStatus
-  trackingNumber?: string
+  id: string;
+  date: string;
+  products: string[];
+  total: string;
+  status: OrderStatus;
+  trackingNumber?: string;
 }
 
 export default function CommandesContent() {
-  const [orders] = useState<Order[]>([
-    {
-      id: "CMD-2023-001",
-      date: "15/03/2023",
-      products: ["Bouquet Printanier", "Vase en céramique"],
-      total: "59,90 €",
-      status: "livré",
-      trackingNumber: "TRK293847",
-    },
-    {
-      id: "CMD-2023-002",
-      date: "02/04/2023",
-      products: ["Arrangement Élégance Rustique", "Carte personnalisée"],
-      total: "45,50 €",
-      status: "livré",
-      trackingNumber: "TRK394857",
-    },
-    {
-      id: "CMD-2023-003",
-      date: "18/04/2023",
-      products: ["Bouquet de Roses Rouges", "Chocolats assortis"],
-      total: "72,00 €",
-      status: "annulé",
-    },
-    {
-      id: "CMD-2023-004",
-      date: "05/05/2023",
-      products: ["Composition Florale Exotique"],
-      total: "68,90 €",
-      status: "en-attente",
-      trackingNumber: "TRK583920",
-    },
-    {
-      id: "CMD-2023-005",
-      date: "20/05/2023",
-      products: ["Orchidée en Pot", "Engrais spécial orchidées"],
-      total: "54,80 €",
-      status: "en-attente",
-      trackingNumber: "TRK673021",
-    },
-  ])
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("tous");
+  const [user] = useAuthState(auth);
+  const router = useRouter();
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState<string>("tous")
-  const router = useRouter()
+  const userId = user?.uid;
+
+  // Charger les commandes de l'utilisateur
+  useEffect(() => {
+    const loadOrders = async () => {
+      if (!userId) return; // Vérifiez que userId est défini
+
+      try {
+        // Référence à la sous-collection `orders/${userId}/userOrders`
+        const ordersCollectionRef = collection(db, "orders", userId, "userOrders");
+
+        // Récupérer les documents de la sous-collection
+        const ordersSnapshot = await getDocs(ordersCollectionRef);
+
+        // Transformer les documents en tableau d'objets Order
+        const ordersData = ordersSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Order[];
+
+        // Mettre à jour l'état `orders`
+        setOrders(ordersData);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des commandes :", error);
+      }
+    };
+
+    loadOrders();
+  }, [userId]);
+
+  // Fonction pour filtrer les commandes
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.products.some((product) => product.toLowerCase().includes(searchTerm.toLowerCase()))
+      order.products.some((product) => product.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesStatus = statusFilter === "tous" || order.status === statusFilter
+    const matchesStatus = statusFilter === "tous" || order.status === statusFilter;
 
-    return matchesSearch && matchesStatus
-  })
+    return matchesSearch && matchesStatus;
+  });
 
   // Fonction pour obtenir la couleur du badge en fonction du statut
   const getStatusBadgeVariant = (status: OrderStatus) => {
     switch (status) {
       case "livré":
-        return "success"
+        return "success";
       case "en-attente":
-        return "warning"
+        return "warning";
       case "annulé":
-        return "destructive"
+        return "destructive";
       default:
-        return "secondary"
+        return "secondary";
     }
-  }
+  };
 
   // Fonction pour obtenir le libellé du statut
   const getStatusLabel = (status: OrderStatus) => {
     switch (status) {
       case "livré":
-        return "Livré"
+        return "Livré";
       case "en-attente":
-        return "En attente"
+        return "En attente";
       case "annulé":
-        return "Annulé"
+        return "Annulé";
       default:
-        return status
+        return status;
     }
-  }
+  };
 
   // Fonction pour obtenir l'icône du statut
   const getStatusIcon = (status: OrderStatus) => {
     switch (status) {
       case "livré":
-        return <Truck className="h-4 w-4 mr-1" />
+        return <Truck className="h-4 w-4 mr-1" />;
       case "en-attente":
-        return <Clock className="h-4 w-4 mr-1" />
+        return <Clock className="h-4 w-4 mr-1" />;
       case "annulé":
-        return <X className="h-4 w-4 mr-1" />
+        return <X className="h-4 w-4 mr-1" />;
       default:
-        return <Package className="h-4 w-4 mr-1" />
+        return <Package className="h-4 w-4 mr-1" />;
     }
-  }
+  };
 
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-serif font-bold text-emerald-800 dark:text-emerald-200 mb-2 flex items-center">
-            <ArrowLeft onClick={() => router.back()} className="cursor-pointer mr-2"/>
+            <ArrowLeft onClick={() => router.push("/")} className="cursor-pointer mr-2" />
             Mes Commandes
           </h1>
           <p className="text-emerald-700 dark:text-emerald-300">Suivez l&apos;historique et l&apos;état de vos commandes</p>
@@ -270,5 +265,5 @@ export default function CommandesContent() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

@@ -2,8 +2,8 @@ import { db } from "@/firebase/firebase";
 import { Flower } from "@/types/Flower";
 import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
-
-const FLOWER_DATA = [
+//Merci pour votre achat vous pouvez suivre vos commandes dans la section Mes commandes
+const FLOWER_DATA : Flower[] = [
     {
       id: '1',
       title: 'Magnifique Rose Rouge',
@@ -13,7 +13,8 @@ const FLOWER_DATA = [
       author: 'Emma Wilson',
       views: 45678,
       postedAt: 'Il y a 2 jours',
-      price: 5000
+      price: 5000,
+      payementLink: "https://buy.stripe.com/test_7sIg0pgyYaHlc1O8wC"
     },
     {
       id: '2',
@@ -24,7 +25,9 @@ const FLOWER_DATA = [
       author: 'Thomas Clark',
       views: 32456,
       postedAt: 'Il y a 3 jours',
-      price: 7000
+      price: 7000,
+      payementLink: "https://buy.stripe.com/test_5kA9C14Qg9Dhc1O007"
+
     },
     {
       id: '3',
@@ -35,7 +38,8 @@ const FLOWER_DATA = [
       author: 'Sarah Johnson',
       views: 28934,
       postedAt: 'Il y a 1 jour',
-      price: 4500
+      price: 4500,
+      payementLink: "https://buy.stripe.com/test_dR6eWl82s9Dh4zmeV2"
     },
     {
       id: '4',
@@ -46,7 +50,8 @@ const FLOWER_DATA = [
       author: 'Yuki Tanaka',
       views: 67123,
       postedAt: 'Il y a 4 jours',
-      price: 8000
+      price: 8000,
+      payementLink: "https://buy.stripe.com/test_3cs7tT4Qg9Dh3vi009"
     },
     {
       id: '5',
@@ -57,7 +62,8 @@ const FLOWER_DATA = [
       author: 'David Lee',
       views: 54321,
       postedAt: 'Il y a 1 semaine',
-      price: 6000
+      price: 6000,
+      payementLink: "https://buy.stripe.com/test_bIY9C16Yo2aP2re8wG"
     }
   ];
   
@@ -65,20 +71,25 @@ const FLOWER_DATA = [
     const [flowers, setFlowers] = useState<Flower[]>([]);
     const [loading, setLoading] = useState(true);
   
-    // Fonction pour ajouter les fleurs à Firestore
+    // Fonction pour ajouter les fleurs à Firestore si la collection est vide
     const uploadFlowers = useCallback(async () => {
       try {
         const flowerCollectionRef = collection(db, "flowers");
         const flowerSnapshot = await getDocs(flowerCollectionRef);
-      
-        if (!flowerSnapshot.empty) {
-          const flowers = flowerSnapshot.docs.map(doc => doc.data());
-          console.log("✅ Fleurs récupérées avec succès:", flowers);
+  
+        if (flowerSnapshot.empty) {
+          // Si la collection est vide, ajouter les données initiales
+          console.log("📂 Collection 'flowers' vide. Ajout des données initiales...");
+          for (const flower of FLOWER_DATA) {
+            const flowerRef = doc(db, "flowers", flower.id); // Utiliser l'ID comme clé du document
+            await setDoc(flowerRef, flower);
+          }
+          console.log("✅ Données initiales ajoutées avec succès.");
         } else {
-          console.log("❌ Aucune fleur trouvée dans la collection.");
+          console.log("✅ Collection 'flowers' déjà existante.");
         }
       } catch (error) {
-        console.error("❌ Erreur lors de la récupération des fleurs:", error);
+        console.error("❌ Erreur lors de l'ajout des fleurs:", error);
       }
     }, []);
   
