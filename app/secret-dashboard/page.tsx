@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, use } from "react"
 import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc, serverTimestamp } from "firebase/firestore"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent } from "@/components/ui/card"
@@ -83,7 +83,6 @@ export type DashboardStats = {
 export default function Dashboard() {
   const [user, loading] = useAuthState(auth)
   const router = useRouter()
-  const [isAdmin, setIsAdmin] = useState(true) // For demo purposes, set to true
   const [isCheckingAdmin, setIsCheckingAdmin] = useState(false)
 
   // Data states
@@ -107,6 +106,7 @@ export default function Dashboard() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [currentItem, setCurrentItem] = useState<any>(null)
   const [formData, setFormData] = useState<any>({})
+
 
   // Fetch data
   useEffect(() => {
@@ -133,7 +133,7 @@ export default function Dashboard() {
         setUsers(usersData)
 
         // Fetch blog posts
-        const postsSnapshot = await getDocs(collection(db, "blog_posts"))
+        const postsSnapshot = await getDocs(collection(db, "blog"))
         const postsData = postsSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -557,9 +557,8 @@ export default function Dashboard() {
       </div>
     )
   }
-
-  // Access denied
-  if (!isAdmin) {
+  // Access deniedlet
+  if (user?.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
     return (
       <div className="container mx-auto py-8 px-4 flex justify-center items-center min-h-screen">
         <Card className="w-full max-w-md">
