@@ -54,8 +54,8 @@ export default function SideBar() {
     router.push("/")
   }
   
-  const SideBarContent = () => (
-    <div className="h-full flex flex-col py-6 w-[220px] bg-emerald-50 dark:bg-gray-800">
+  const SideBarContent = ({className}: {className?: string}) => (
+    <div className={className ? className : "h-full flex flex-col py-6 w-[220px] bg-emerald-50 dark:bg-gray-800"}>
       <div className="px-3 py-2">
         <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight text-emerald-800">Menu</h2>
         <div className="space-y-1">
@@ -122,7 +122,7 @@ export default function SideBar() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className=" p-0">
-          <SideBarContent />
+          <SideBarContent  className="h-full flex flex-col py-6 w-full bg-emerald-50 dark:bg-gray-800"/>
         </SheetContent>
       </Sheet>
     )
@@ -131,7 +131,7 @@ export default function SideBar() {
   // Desktop version
   return (
     <div className="hidden md:block  bg-white dark:bg-gray-950">
-      <SideBarContent />
+      <SideBarContent/>
     </div>
   )
 }
