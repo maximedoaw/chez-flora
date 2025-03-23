@@ -5,6 +5,7 @@ import Pricing from './Pricing'
 import Testimonials from './Testimonials'
 import FlowerCards from './FlowerCards'
 import { useTheme } from 'next-themes'
+import Contact from './Contact'
 
 const AuthScreen = () => {
   // Accéder au thème actuel
@@ -19,6 +20,7 @@ const AuthScreen = () => {
         <Pricing />
         <FlowerCards />
         <Testimonials />
+        <Contact/>
       </div>
     </div>
   )
