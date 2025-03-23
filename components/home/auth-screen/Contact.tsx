@@ -23,7 +23,7 @@
    const [successMessage, setSuccessMessage] = useState<string | null>(null);
    const [errorMessage, setErrorMessage] = useState<string | null>(null);
  
-   const whatsappLink = "https://wa.me/1234567890"; // Lien WhatsApp par défaut
+   const whatsappLink = "https://wa.me/677271237"; // Lien WhatsApp par défaut
  
    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
      const { name, value } = e.target;
